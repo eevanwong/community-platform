@@ -1,10 +1,10 @@
 import { observable, action, makeObservable } from 'mobx'
 import {
   IMapPin,
-  IBoundingBox,
   IMapGrouping,
   IMapPinWithDetail,
   IMapPinDetail,
+  IBoundingBox,
 } from 'src/models/maps.models'
 import { IDBEndpoint } from 'src/models/common.models'
 import { RootStore } from '..'
@@ -60,7 +60,11 @@ export class MapsStore extends ModuleStore {
       const isPinAccepted = p.moderation === 'accepted'
       const wasCreatedByUser = activeUser && p._id === activeUser.userName
       const isAdminAndAccepted = isAdmin && p.moderation !== 'rejected'
-      return p.type && (isPinAccepted || wasCreatedByUser || isAdminAndAccepted)
+      return (
+        p.type &&
+        p.type !== 'member' &&
+        (isPinAccepted || wasCreatedByUser || isAdminAndAccepted)
+      )
     })
     if (IS_MOCK) {
       pins = MOCK_PINS
@@ -69,11 +73,12 @@ export class MapsStore extends ModuleStore {
     this.filteredPins = this.mapPins
   }
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  /** TODO CC 2021-05-28 review if still useful to keep */
   @action
   public setMapBoundingBox(boundingBox: IBoundingBox) {
     // this.recalculatePinCounts(boundingBox)
   }
-
   @action
   public async retrieveMapPins() {
     // TODO: make the function accept a bounding box to reduce load from DB
@@ -128,14 +133,25 @@ export class MapsStore extends ModuleStore {
    * set undefined to remove any active popup
    */
   @action
-  public async setActivePin(pin?: IMapPin) {
+  public async setActivePin(pin?: IMapPin | IMapPinWithDetail) {
+    // HACK - CC - 2021-07-14 ignore hardcoded pin details, should be retrieved
+    // from profile on open instead (needs cleaning from DB)
+    if (pin && pin.hasOwnProperty('detail')) {
+      delete pin['detail']
+    }
     this.activePin = pin
     if (pin) {
-      const detail: IMapPinDetail = IS_MOCK
-        ? generatePinDetails(pin)
-        : await this.getUserProfilePin(pin._id)
-      this.activePin = { ...pin, detail }
+      const pinWithDetail = await this.getPinDetail(pin)
+      this.activePin = pinWithDetail
     }
+  }
+  // call additional action when pin detail received to inform mobx correctly of update
+  private async getPinDetail(pin: IMapPin) {
+    const detail: IMapPinDetail = IS_MOCK
+      ? generatePinDetails()
+      : await this.getUserProfilePin(pin._id)
+    const pinWithDetail: IMapPinWithDetail = { ...pin, detail }
+    return pinWithDetail
   }
 
   // get base pin geo information
@@ -144,12 +160,6 @@ export class MapsStore extends ModuleStore {
       .collection<IMapPin>(COLLECTION_NAME)
       .doc(id)
       .get()
-    /*
-    // Doesn't work on page load: activeUser is not populated ...
-    if(pin && (pin.moderation!='accepted' && !hasAdminRights(this.activeUser))){
-      return undefined
-    }
-*/
     return pin as IMapPin
   }
 
@@ -170,7 +180,8 @@ export class MapsStore extends ModuleStore {
     if (!hasAdminRights(this.activeUser)) {
       return false
     }
-    this.setPin(pin)
+    await this.setPin(pin)
+    this.setActivePin(pin)
   }
   public needsModeration(pin: IMapPin) {
     return needsModeration(pin, this.activeUser)
@@ -184,7 +195,7 @@ export class MapsStore extends ModuleStore {
       _id: user.userName,
       location: user.location!.latlng,
       type: user.profileType ? user.profileType : 'member',
-      moderation: 'awaiting-moderation',
+      moderation: 'awaiting-moderation', // NOTE - if pin previously accespted this will be updated on backend function
     }
     if (user.workspaceType) {
       pin.subType = user.workspaceType
@@ -212,7 +223,9 @@ export class MapsStore extends ModuleStore {
         profilePicUrl: '',
         shortDescription: '',
         name: username,
+        displayName: username,
         profileUrl: `${window.location.origin}/u/${username}`,
+        verifiedBadge: false,
       }
     }
     const avatar = getUserAvatar(username)
@@ -227,7 +240,9 @@ export class MapsStore extends ModuleStore {
       profilePicUrl: avatar,
       shortDescription: u.mapPinDescription ? u.mapPinDescription : '',
       name: u.userName,
+      displayName: u.displayName,
       profileUrl: `${window.location.origin}/u/${u.userName}`,
+      verifiedBadge: u.badges?.verified || false,
     }
   }
   @action

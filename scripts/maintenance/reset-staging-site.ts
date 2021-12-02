@@ -1,5 +1,6 @@
 import { spawnSync, SpawnSyncOptions } from 'child_process'
 import chalk from 'chalk'
+import { generateDBEndpoints } from 'oa-shared'
 
 /***********************************************************************************
  * Constants
@@ -14,17 +15,17 @@ const TARGET_PROJECT_ALIAS = 'next'
 const STORAGE_BUCKET = 'onearmyworld-exports'
 /** Path to a service account file that will be used for operations */
 const SERVICE_ACCOUNT_JSON_PATH = 'config/onearmy-migrator-service-account.json'
-/** Timestamp suffix that will be appended to exports (e.g. 2021-01-26T07:50) */
-const timestamp = new Date().toISOString().substring(0, 16)
+/** Timestamp suffix that will be appended to exports (e.g. 2021-01-26T0750) */
+const timestamp = new Date().toISOString().substring(0, 16).replace(':','')
 /** Storage path that will be used to store the exported data */
 const EXPORT_TARGET = `${STORAGE_BUCKET}/${timestamp}`
 // Specify collections and subcollections for export
 // (can export all without setting collectionIds, but some data might be sensitive or not required. Also allows import into bigquery)
 // e.g. 'v3_users','v3_events' and 'revisions' subcollection */
-const DB_PREFIX = 'v3'
-const COLLECTION_IDS = ['events', 'howtos', 'mappins', 'tags', 'users']
-  .map(id => `${DB_PREFIX}_${id}`)
-  .concat('revisions')
+
+const DB_ENDPOINTS = generateDBEndpoints()
+const COLLECTION_IDS = Object.values(DB_ENDPOINTS)
+  .concat('revisions', 'stats')
   .join(',')
 
 /**

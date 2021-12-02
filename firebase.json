@@ -44,25 +44,34 @@
     ]
   },
   "functions": {
-    "predeploy": [
-      "yarn --cwd \"$RESOURCE_DIR\" install",
-      "npm --prefix \"$RESOURCE_DIR\" run lint",
-      "npm --prefix \"$RESOURCE_DIR\" run build"
-    ],
-    "source": "functions"
+    "predeploy": ["yarn workspace functions build"],
+    "source": "functions/dist"
   },
   "emulators": {
+    "ui": {
+      "enabled": true,
+      "port": 4001
+    },
     "functions": {
-      "port": 5001
+      "port": 4002
     },
     "firestore": {
-      "port": 8080
+      "port": 4003
     },
     "hosting": {
-      "port": 5000
+      "port": 4004
     },
-    "ui": {
-      "enabled": true
+    "auth": {
+      "port": 4005
+    },
+    "database": {
+      "port": 4006
+    },
+    "storage": {
+      "port": 4007
     }
+  },
+  "storage": {
+    "rules": "firebase.storage.rules"
   }
 }

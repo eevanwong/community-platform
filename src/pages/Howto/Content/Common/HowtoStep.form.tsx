@@ -1,4 +1,4 @@
-import React from 'react'
+import { PureComponent } from 'react'
 import { Field } from 'react-final-form'
 import { TextAreaField, InputField } from 'src/components/Form/Fields'
 import Heading from 'src/components/Heading'
@@ -12,7 +12,7 @@ import theme from 'src/themes/styled.theme'
 import { IHowtoStep } from 'src/models/howto.models'
 import { IUploadedFileMeta } from 'src/stores/storage'
 import { required } from 'src/utils/validators'
-import { COMPARISONS } from './Comparisons'
+import { COMPARISONS } from 'src/utils/comparisons'
 
 const ImageInputFieldWrapper = styled.div`
   width: 150px;
@@ -37,7 +37,7 @@ const Label = styled.label`
   margin-bottom: ${theme.space[2] + 'px'};
 `
 
-class HowtoStep extends React.PureComponent<IProps, IState> {
+class HowtoStep extends PureComponent<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -143,6 +143,7 @@ class HowtoStep extends React.PureComponent<IProps, IState> {
           <Field
             name={`${step}.title`}
             data-cy="step-title"
+            modifiers={{ capitalize: true }}
             component={InputField}
             placeholder="Title of this step (max 30 characters)"
             maxLength="30"
@@ -158,6 +159,7 @@ class HowtoStep extends React.PureComponent<IProps, IState> {
             placeholder="Explain what you are doing in this step. if it gets to long break it into 2 steps (max 700 characters)"
             maxLength="700"
             data-cy="step-description"
+            modifiers={{ capitalize: true }}
             component={TextAreaField}
             style={{ resize: 'vertical', height: '300px' }}
             validate={required}

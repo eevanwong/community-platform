@@ -1,28 +1,43 @@
-import * as React from 'react'
+import { Suspense, lazy } from 'react'
+import { AuthRoute } from '../common/AuthRoute'
 import { Route, Switch, withRouter } from 'react-router-dom'
-import { ResearchList } from './Content/ResearchList'
-import { ResearchItemDetail } from './Content/ResearchItemDetail'
+const CreateResearch = lazy(() => import('./Content/CreateResearch'))
+const CreateUpdate = lazy(() => import('./Content/CreateUpdate'))
+const ResearchItemEditor = lazy(() => import('./Content/EditResearch'))
+const UpdateItemEditor = lazy(() => import('./Content/EditUpdate'))
+const ResearchItemDetail = lazy(() => import('./Content/ResearchItemDetail'))
+const ResearchList = lazy(() => import('./Content/ResearchList'))
 
 const routes = () => (
-  <Switch>
-    <Route exact path="/research" component={ResearchList} />
-    <Route
-      exact
-      path="/research/create"
-      // component={ResearchItemEditor}
-    />
-    <Route
-      path="/research/:slug"
-      render={routeProps => (
-        <ResearchItemDetail slug={routeProps.match.params.slug} />
-      )}
-    />
-    <Route
-      exact
-      path="/research/:slug/edit"
-      // component={ResearchItemEditor}
-    />
-  </Switch>
+  <Suspense fallback={<div></div>}>
+    <Switch>
+      <Route exact path="/research" component={ResearchList} />
+      <AuthRoute
+        path="/research/create"
+        component={CreateResearch}
+        roleRequired="beta-tester"
+      />
+      <Route path="/research/:slug" component={ResearchItemDetail} />
+      <AuthRoute
+        exact
+        path="/research/:slug/new-update"
+        component={CreateUpdate}
+        roleRequired="beta-tester"
+      />
+      <AuthRoute
+        exact
+        path="/research/:slug/edit"
+        component={ResearchItemEditor}
+        roleRequired="beta-tester"
+      />
+      <AuthRoute
+        exact
+        path="/research/:slug/edit-update/:update"
+        component={UpdateItemEditor}
+        roleRequired="beta-tester"
+      />
+    </Switch>
+  </Suspense>
 )
 
 export default withRouter(routes)

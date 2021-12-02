@@ -1,4 +1,3 @@
-import React from 'react'
 import Flex from 'src/components/Flex'
 import ModerationStatusText from 'src/components/ModerationStatusText'
 import Text from 'src/components/Text'
@@ -6,7 +5,7 @@ import { Button } from 'src/components/Button'
 import TagDisplay from 'src/components/Tags/TagDisplay/TagDisplay'
 import FlagIconEvents from 'src/components/Icons/FlagIcon/FlagIcon'
 import { IEvent } from '../../models/events.models'
-import { getMonth, getDay } from 'src/utils/helpers'
+import { getMonth, getDay, capitalizeFirstLetter } from 'src/utils/helpers'
 import { LinkTargetBlank } from '../Links/LinkTargetBlank/LinkTargetBlank'
 
 interface IProps {
@@ -29,10 +28,14 @@ export const EventCard = (props: IProps) => (
     flexDirection={['column', 'column', 'initial']}
     sx={{ position: 'relative' }}
     data-cy="card"
-    data-eventId={props.event._id}
+    data-eventid={props.event._id}
   >
     {props.event.moderation !== 'accepted' && (
-      <ModerationStatusText event={props.event} top={'0px'} />
+      <ModerationStatusText
+        moderatedContent={props.event}
+        contentType="event"
+        top={'0px'}
+      />
     )}
 
     <Flex flexWrap={'wrap'} flex={'1'} mb={[1, 1, 0]} order={[1, 1, 1]}>
@@ -73,7 +76,7 @@ export const EventCard = (props: IProps) => (
     >
       <Flex alignItems={'center'} width={1}>
         <Text bold color="black" fontSize={[3, 3, 4]}>
-          {props.event.title}
+          {capitalizeFirstLetter(props.event.title)}
         </Text>
       </Flex>
       <Text auxiliary width={1}>

@@ -1,11 +1,10 @@
-import React from 'react'
+import { Component } from 'react'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import { UserStore } from 'src/stores/User/user.store'
 import { inject, observer } from 'mobx-react'
 import Flex from 'src/components/Flex'
 import { Avatar } from 'src/components/Avatar'
 import { ProfileModal } from 'src/components/ProfileModal/ProfileModal'
-import theme from 'src/themes/styled.theme'
 import MenuMobileLink from 'src/pages/common/Header/Menu/MenuMobile/MenuMobileLink'
 import ProfileButtons from './ProfileButtons'
 import { MenuMobileLinkContainer } from '../MenuMobile/MenuMobilePanel'
@@ -25,7 +24,7 @@ interface IInjectedProps extends IProps {
 
 @inject('userStore')
 @observer
-export default class Profile extends React.Component<IProps, IState> {
+export default class Profile extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
@@ -62,17 +61,13 @@ export default class Profile extends React.Component<IProps, IState> {
               <MenuMobileLink
                 path={window.location.pathname}
                 content={'Log out'}
-                style={{ color: theme.colors.silver }}
                 onClick={() => this.injected.userStore.logout()}
               />
             </MenuMobileLinkContainer>
           ) : (
             <div data-cy="user-menu">
               <Flex onClick={() => this.toggleProfileModal()} ml={1}>
-                <Avatar
-                  userName={user.userName}
-                  profileType={user.profileType}
-                />
+                <Avatar profileType={user.profileType} />
               </Flex>
               <Flex>
                 {showProfileModal && (

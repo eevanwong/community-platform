@@ -22,14 +22,14 @@ interface ISelectFieldProps extends IFieldProps, SelectProps {
 // TODO - better bind the above input styles to the react-select component
 // (currently implements its own styling with following overrides)
 export const SelectStyles: Partial<Styles> = {
-  container: (provided, state) => ({
+  container: provided => ({
     ...provided,
     fontSize: theme.fontSizes[2] + 'px',
     fontFamily: '"Varela Round", Arial, sans-serif',
   }),
-  control: (provided, state) => ({
+  control: provided => ({
     ...provided,
-    border: '1px solid #dce4e5',
+    border: '1px solid ' + theme.colors.softblue,
     backgroundColor: theme.colors.background,
     minHeight: '40px',
     boxShadow: 'none',
@@ -42,37 +42,37 @@ export const SelectStyles: Partial<Styles> = {
     },
   }),
 
-  option: (provided, state) => ({
+  option: provided => ({
     ...provided,
     backgroundColor: theme.colors.background,
     boxShadow: 'none',
-    color: 'black',
+    color: theme.colors.black,
     ':hover': {
       outline: 'none',
-      backgroundColor: 'white',
-      color: 'black',
+      backgroundColor: theme.colors.white,
+      color: theme.colors.black,
     },
   }),
 
-  menu: (provided, state) => ({
+  menu: provided => ({
     ...provided,
-    border: '1px solid #dce4e5',
+    border: '1px solid ' + theme.colors.softblue,
     boxShadow: 'none',
     backgroundColor: theme.colors.background,
     ':hover': {
-      border: '1px solid #dce4e5',
+      border: '1px solid ' + theme.colors.softblue,
     },
   }),
 
-  multiValue: (provided, state) => ({
+  multiValue: provided => ({
     ...provided,
     backgroundColor: theme.colors.softblue,
     padding: '2px',
-    border: '1px solid #c2d4e4',
+    border: '1px solid ' + theme.colors.softgrey,
     color: theme.colors.grey,
   }),
 
-  indicatorSeparator: (provided, state) => ({
+  indicatorSeparator: provided => ({
     ...provided,
     display: 'none',
   }),
@@ -87,17 +87,17 @@ export const SelectStyles: Partial<Styles> = {
 }
 
 export const FilterStyles: Partial<Styles> = {
-  container: (provided, state) => ({
+  container: provided => ({
     ...provided,
     fontSize: theme.fontSizes[2] + 'px',
     fontFamily: '"Varela Round", Arial, sans-serif',
-    border: '2px solid black',
+    border: '2px solid ' + theme.colors.black,
     borderRadius: '5px',
-    color: 'black',
+    color: theme.colors.black,
   }),
-  control: (provided, state) => ({
+  control: provided => ({
     ...provided,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.white,
     minHeight: '40px',
     boxShadow: 'none',
     ':hover': {
@@ -107,41 +107,41 @@ export const FilterStyles: Partial<Styles> = {
       border: '1px solid ' + theme.colors.blue,
     },
   }),
-  placeholder: (provided, state) => ({
+  placeholder: provided => ({
     ...provided,
-    color: 'black',
+    color: theme.colors.black,
   }),
-  option: (provided, state) => ({
+  option: provided => ({
     ...provided,
-    color: 'black',
-    backgroundColor: 'white',
+    color: theme.colors.black,
+    backgroundColor: theme.colors.white,
     boxShadow: 'none',
     ':hover': {
       outline: 'none',
       backgroundColor: theme.colors.softblue,
-      color: 'black',
+      color: theme.colors.black,
     },
   }),
 
-  menu: (provided, state) => ({
+  menu: provided => ({
     ...provided,
-    border: '2px solid black',
+    border: '2px solid ' + theme.colors.black,
     boxShadow: 'none',
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.white,
     ':hover': {
-      border: '2px solid black',
+      border: '2px solid ' + theme.colors.black,
     },
   }),
 
-  multiValue: (provided, state) => ({
+  multiValue: provided => ({
     ...provided,
     backgroundColor: theme.colors.softblue,
     padding: '2px',
-    border: '1px solid black',
+    border: '1px solid ' + theme.colors.black,
     color: theme.colors.grey,
   }),
 
-  indicatorSeparator: (provided, state) => ({
+  indicatorSeparator: provided => ({
     ...provided,
     display: 'none',
   }),

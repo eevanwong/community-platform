@@ -33,11 +33,13 @@ export interface IMapPinWithDetail extends IMapPin {
 
 export interface IMapPinDetail {
   name: string
+  displayName: string
   shortDescription: string
   lastActive: ISODateString
   profilePicUrl: string
   profileUrl: string
   heroImageUrl: string
+  verifiedBadge: boolean
 }
 
 export interface ILatLng {

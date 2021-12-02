@@ -35,13 +35,13 @@ const ModalContainerInner = styled(Box)`
   border-radius: 5px;
 `
 
-const ModalLink = styled(NavLink).attrs(({ name }) => ({
+const ModalLink = styled(NavLink).attrs(() => ({
   activeClassName: 'current',
 }))`
   z-index: ${zIndex.modalProfile};
   display: flex;
   flex-direction: column;
-  color: #000;
+  color: ${theme.colors.black};
   padding: 10px 30px 10px 30px;
   text-align: left;
   width: 100%;
@@ -57,7 +57,7 @@ const ModalLink = styled(NavLink).attrs(({ name }) => ({
     color: ${theme.colors.blue};
   }
   &.current {
-    background-color: #fff;
+    background-color: ${theme.colors.white};
     color: ${theme.colors.blue};
   }
 `
@@ -104,7 +104,7 @@ export class ProfileModal extends React.Component<IProps> {
               to={window.location.pathname}
               data-cy="menu-Logout"
             >
-              <Flex color="rgba(27,27,27,0.5)">Log out</Flex>
+              <Flex>Log out</Flex>
             </ModalLink>
           </Flex>
         </ModalContainerInner>
